@@ -2,12 +2,17 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
+import os
 
 from pricing_engine import bsm_price, greeks
 from implied_vol import implied_vol
 from var_module import parametric_var, historical_simulation_var, portfolio_value, portfolio_delta_exposure
 
 RISK_FREE_RATE = 0.05278  # RBI 91-day T-Bill, as of 2026-08-05
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_PROCESSED = os.path.join(BASE_DIR, "..", "data", "processed")
+DATA_RAW = os.path.join(BASE_DIR, "..", "data", "raw")
 
 st.set_page_config(page_title="Live Derivatives Analytics Dashboard", layout="wide")
 st.title("NIFTY Derivatives Analytics Dashboard")
@@ -63,7 +68,7 @@ if selected_module == "Live Market Data":
             st.session_state["live_spot"] = live_spot
     else:
         st.info("Click 'Refresh Live Data' to fetch the current NIFTY price.")
-        
+
 elif selected_module == "Option Pricing Calculator":
     st.header("Option Pricing Calculator")
     st.caption("Estimate a theoretical option price using the Black-Scholes-Merton model.")
@@ -165,7 +170,7 @@ elif selected_module == "Implied Volatility Estimator":
         xaxis_title="Strike", yaxis_title="Implied Volatility (%)",
         template="plotly_white",
     )
-    st.plotly_chart(fig_iv,use_container_width=True)
+    st.plotly_chart(fig_iv, use_container_width=True)
 
     n_call_failed = df_iv["call_recovered_iv"].isna().sum() - (~df_iv["call_data_available"]).sum()
     n_put_failed = df_iv["put_recovered_iv"].isna().sum() - (~df_iv["put_data_available"]).sum()
@@ -177,7 +182,7 @@ elif selected_module == "Implied Volatility Estimator":
     st.subheader("Implied vs. Historical Volatility")
     st.caption("Compares what the market is currently pricing in (IV) against how much NIFTY has actually moved recently (realized volatility).")
 
-    nifty_hist_iv = pd.read_csv("../data/raw/nifty50_20260819_232859.csv", skiprows=[1, 2])
+    nifty_hist_iv = pd.read_csv(os.path.join(DATA_RAW, "nifty50_20260819_232859.csv"), skiprows=[1, 2])
     nifty_hist_iv = nifty_hist_iv.rename(columns={"Price": "Date"})
     nifty_hist_iv["Close"] = pd.to_numeric(nifty_hist_iv["Close"], errors="coerce")
     nifty_hist_iv["daily_return"] = nifty_hist_iv["Close"].pct_change()
@@ -300,7 +305,7 @@ elif selected_module == "Value at Risk (VaR) Analysis":
 
     try:
         df_var = pd.read_csv(os.path.join(DATA_PROCESSED, "final_nifty_option_chain.csv"))
-nifty_hist_var = pd.read_csv(os.path.join(DATA_RAW, "nifty50_20260819_232859.csv"), skiprows=[1, 2])
+        nifty_hist_var = pd.read_csv(os.path.join(DATA_RAW, "nifty50_20260819_232859.csv"), skiprows=[1, 2])
         nifty_hist_var = nifty_hist_var.rename(columns={"Price": "Date"})
         nifty_hist_var["Date"] = pd.to_datetime(nifty_hist_var["Date"])
         for c in ["Close", "High", "Low", "Open", "Volume"]:
