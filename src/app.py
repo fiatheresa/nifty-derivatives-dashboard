@@ -125,7 +125,7 @@ elif selected_module == "Implied Volatility Estimator":
     st.caption("Recovers implied volatility from market prices and compares it against NSE's reported IV.")
 
     try:
-        df_iv = pd.read_csv("../data/processed/final_nifty_option_chain.csv")
+        df_iv = pd.read_csv(os.path.join(DATA_PROCESSED, "final_nifty_option_chain.csv"))
     except FileNotFoundError:
         st.error("final_nifty_option_chain.csv not found in data/processed/. Run the Phase 1-3 pipeline first.")
         st.stop()
@@ -299,8 +299,8 @@ elif selected_module == "Value at Risk (VaR) Analysis":
     st.caption("Estimate portfolio VaR using Parametric (Delta-Normal) and Historical Simulation methods.")
 
     try:
-        df_var = pd.read_csv("../data/processed/final_nifty_option_chain.csv")
-        nifty_hist_var = pd.read_csv("../data/raw/nifty50_20260819_232859.csv", skiprows=[1, 2])
+        df_var = pd.read_csv(os.path.join(DATA_PROCESSED, "final_nifty_option_chain.csv"))
+nifty_hist_var = pd.read_csv(os.path.join(DATA_RAW, "nifty50_20260819_232859.csv"), skiprows=[1, 2])
         nifty_hist_var = nifty_hist_var.rename(columns={"Price": "Date"})
         nifty_hist_var["Date"] = pd.to_datetime(nifty_hist_var["Date"])
         for c in ["Close", "High", "Low", "Open", "Volume"]:
