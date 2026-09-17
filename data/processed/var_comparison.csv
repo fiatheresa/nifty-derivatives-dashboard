@@ -1,0 +1,5 @@
+Portfolio,Confidence,Parametric VaR (₹),Historical Sim. VaR (₹),Ratio (Hist/Param),Interpretation
+Long Put-Heavy (demo 1),95%,2687.873648589009,-681.3768586232023,-0.25,"No historical losses observed — VaR reflects retained minimum gain, not tail risk"
+Long Put-Heavy (demo 1),99%,3800.6043201325438,-677.152043888172,-0.18,"No historical losses observed — VaR reflects retained minimum gain, not tail risk"
+Short Strangle (demo 2),95%,4901.998029338625,12362.08564502502,2.52,Historical Sim. captures Gamma risk Parametric method misses (2.5x)
+Short Strangle (demo 2),99%,6931.335815344463,28922.20006181947,4.17,Historical Sim. captures Gamma risk Parametric method misses (4.2x)
